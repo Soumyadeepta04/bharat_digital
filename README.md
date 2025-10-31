@@ -1,40 +1,149 @@
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/2f76e4b6-bf21-4d01-8737-1fa2b03f7f37" alt="Emblem of India" width="120"/>
+  
+  <h1>
+    <img src="https://github.com/user-attachments/assets/2f76e4b6-bf21-4d01-8737-1fa2b03f7f37" alt="Emblem of India" width="80" align="center"/>
+    MGNREGA District Performance Tracker
+  </h1>
+  
+  <h2>मनरेगा जिला प्रदर्शन ट्रैकर</h2>
 
-  # 🏛️ MGNREGA District Performance Tracker  
-  ### मनरेगा जिला प्रदर्शन ट्रैकर  
+  <h3>Mahatma Gandhi National Rural Employment Guarantee Act</h3>
+  <h4>महात्मा गांधी राष्ट्रीय ग्रामीण रोजगार गारंटी अधिनियम</h4>
 
-  <h3>Mahatma Gandhi National Rural Employment Guarantee Act</h3>  
-  <h4>महात्मा गांधी राष्ट्रीय ग्रामीण रोजगार गारंटी अधिनियम</h4>  
+  <p><strong>💡 Empowering Rural India Through Transparent Governance</strong></p>
+  <p><strong>पारदर्शी शासन के माध्यम से ग्रामीण भारत का सशक्तिकरण</strong></p>
 
-  <p><strong>Empowering Rural India Through Transparent Governance</strong></p>  
-  <p><strong>पारदर्शी शासन के माध्यम से ग्रामीण भारत का सशक्तिकरण</strong></p>  
+  <br/>
+
+  ![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js&logoColor=white)
+  ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript&logoColor=white)
+  ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14-blue?style=for-the-badge&logo=postgresql&logoColor=white)
+  ![Tailwind](https://img.shields.io/badge/Tailwind-3.4-38bdf8?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
+  <br/>
+
+  <p>
+    <a href="#-features">Features</a> •
+    <a href="#-installation">Installation</a> •
+    <a href="#-usage">Usage</a> •
+    <a href="#-api">API</a> •
+    <a href="#-deployment">Deployment</a> •
+    <a href="#-contributing">Contributing</a>
+  </p>
+
 </div>
 
----
-
-# 📸 Screenshots
-
-<table>
-  <tr>
-    <td colspan="2"><img src="https://github.com/user-attachments/assets/494195fa-5f79-43ed-92a9-b4065c8b0f2b" alt="Home Page" width="820"/></td>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/user-attachments/assets/8fd2bd3c-b319-474c-9709-9a5df54cc679" alt="Auto Detecting" width="400"/></td>
-    <td><img src="https://github.com/user-attachments/assets/6b6751db-aa6c-4c8b-9a1c-409b8ccb4a25" alt="DashBoard" width="400"/></td>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/user-attachments/assets/3b393fd2-f139-4086-b378-b4a8427d3eb9" alt="Manual Detecting" width="400"/></td>
-    <td><img src="https://github.com/user-attachments/assets/410b3caa-8a49-4517-9946-7f128223001a" alt="Compare" width="400"/></td>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/user-attachments/assets/65a72631-cea7-45bc-abd7-6a04481ea6f1" alt="Manual Detecting" width="400"/></td>
-    <td><img src="https://github.com/user-attachments/assets/0dcb5320-d50b-4a64-bc28-7f0b5ef96c7e" alt="Compare" width="400"/></td>
-  </tr>
-  
-</table>
+<br/>
 
 ---
+
+<br/>
+
+<details>
+<summary><h1>📸 Application Screenshots</h1></summary>
+
+<br/>
+
+### 🏠 Homepage - Gateway to MGNREGA Data
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/494195fa-5f79-43ed-92a9-b4065c8b0f2b" alt="Homepage with District Finder Options" width="900"/>
+  <p><i>Bilingual interface with auto-detect and manual selection options</i></p>
+</div>
+
+<br/>
+
+---
+
+<br/>
+
+### 📍 Smart District Detection
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="https://github.com/user-attachments/assets/8fd2bd3c-b319-474c-9709-9a5df54cc679" alt="GPS Auto-Detection in Progress" width="450"/>
+        <br/>
+        <b>🌐 GPS Auto-Detection</b>
+        <br/>
+        <i>Automatically detects your district using geolocation</i>
+      </td>
+      <td align="center">
+        <img src="https://github.com/user-attachments/assets/3b393fd2-f139-4086-b378-b4a8427d3eb9" alt="Manual District Selection" width="450"/>
+        <br/>
+        <b>🔍 Manual Selection</b>
+        <br/>
+        <i>Choose your state and district manually</i>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<br/>
+
+---
+
+<br/>
+
+### 📊 Performance Dashboard
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/6b6751db-aa6c-4c8b-9a1c-409b8ccb4a25" alt="District Performance Dashboard with Charts" width="900"/>
+  <p><i>Comprehensive dashboard with KPIs, charts, and historical trends</i></p>
+</div>
+
+<br/>
+
+---
+
+<br/>
+
+### ⚖️ District Comparison
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="https://github.com/user-attachments/assets/410b3caa-8a49-4517-9946-7f128223001a" alt="District Selection for Comparison" width="450"/>
+        <br/>
+        <b>🎯 Select Districts</b>
+        <br/>
+        <i>Choose any two districts to compare</i>
+      </td>
+      <td align="center">
+        <img src="https://github.com/user-attachments/assets/65a72631-cea7-45bc-abd7-6a04481ea6f1" alt="Side-by-Side Comparison Results" width="450"/>
+        <br/>
+        <b>📈 Comparison View</b>
+        <br/>
+        <i>Side-by-side performance analysis</i>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<br/>
+
+---
+
+<br/>
+
+### 📚 Help & Guidance
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/ad8f8edf-9abd-4401-b335-8d36ed6ee2eb" alt="Help Guide for Low-Literacy Users" width="900"/>
+  <p><i>User-friendly help guide in English and Hindi for all literacy levels</i></p>
+</div>
+
+<br/>
+
+</details>
+
+<br/>
+
+---
+
+<br/>
 
 ## 🤖 Introduction
 
