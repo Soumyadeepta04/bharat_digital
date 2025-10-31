@@ -1,70 +1,65 @@
-# 🇮🇳 MGNREGA Performance TrackerThis is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/2f76e4b6-bf21-4d01-8737-1fa2b03f7f37" alt="Emblem of India" width="120"/>
 
-<div align="center">## Getting Started
+  # 🏛️ MGNREGA District Performance Tracker  
+  ### मनरेगा जिला प्रदर्शन ट्रैकर  
 
-  <p><strong>Track MGNREGA District Performance Across India</strong></p>
+  <h3>Mahatma Gandhi National Rural Employment Guarantee Act</h3>  
+  <h4>महात्मा गांधी राष्ट्रीय ग्रामीण रोजगार गारंटी अधिनियम</h4>  
 
-  <p>A transparent platform for monitoring rural employment guarantee implementation</p>First, run the development server:
-
+  <p><strong>Empowering Rural India Through Transparent Governance</strong></p>  
+  <p><strong>पारदर्शी शासन के माध्यम से ग्रामीण भारत का सशक्तिकरण</strong></p>  
 </div>
-
-```bash
-
----npm run dev
-
-# or
-
-## 🤖 Introductionyarn dev
-
-# or
-
-**MGNREGA Performance Tracker** is a comprehensive web application designed to monitor and analyze the implementation of the Mahatma Gandhi National Rural Employment Guarantee Act (MGNREGA) across Indian districts. Built with modern web technologies, this platform provides transparent access to employment data, performance metrics, and comparative analytics.pnpm dev
-
-# or
-
-### What Makes MGNREGA Tracker Special?bun dev
-
-```
-
-- **Real-Time Data Integration**: Fetches latest data from official data.gov.in API
-
-- **GPS-Based Auto-Detection**: Automatically detects your district using geolocationOpen [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-- **District Comparison**: Compare performance metrics between any two districts side-by-side
-
-- **Beautiful Visualizations**: Interactive charts and graphs powered by RechartsYou can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-- **Bilingual Interface**: Full support for English and Hindi (हिंदी)
-
-- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devicesThis project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-- **Automated Data Ingestion**: Cron jobs for regular database updates at 3 AM IST
-
-- **Comprehensive KPIs**: Track families worked, person days, expenditure, and more## Learn More
-
-- **Inclusivity Metrics**: Monitor women, SC, and ST participation rates
-
-- **Help & Guide**: Low-literacy friendly with simple visual guidesTo learn more about Next.js, take a look at the following resources:
-
-Whether you're a citizen checking local performance, an administrator monitoring implementation, or a researcher analyzing trends, MGNREGA Tracker provides easy access to crucial employment guarantee data.- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-## 🌍 **Live Demo**
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-🔗 **Visit the live application:** [Coming Soon - Deploy to Vercel]
-
-## Deploy on Vercel
 
 ---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# 📸 Screenshots
+
+<table>
+  <tr>
+    <td colspan="2"><img src="https://github.com/user-attachments/assets/494195fa-5f79-43ed-92a9-b4065c8b0f2b" alt="Home Page" width="820"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/8fd2bd3c-b319-474c-9709-9a5df54cc679" alt="Auto Detecting" width="400"/></td>
+    <td><img src="https://github.com/user-attachments/assets/6b6751db-aa6c-4c8b-9a1c-409b8ccb4a25" alt="DashBoard" width="400"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/3b393fd2-f139-4086-b378-b4a8427d3eb9" alt="Manual Detecting" width="400"/></td>
+    <td><img src="https://github.com/user-attachments/assets/410b3caa-8a49-4517-9946-7f128223001a" alt="Compare" width="400"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/65a72631-cea7-45bc-abd7-6a04481ea6f1" alt="Manual Detecting" width="400"/></td>
+    <td><img src="https://github.com/user-attachments/assets/0dcb5320-d50b-4a64-bc28-7f0b5ef96c7e" alt="Compare" width="400"/></td>
+  </tr>
+  
+</table>
+
+---
+
+## 🤖 Introduction
+
+**MGNREGA Performance Tracker** is a comprehensive web application designed to monitor and analyze the implementation of the Mahatma Gandhi National Rural Employment Guarantee Act (MGNREGA) across Indian districts. Built with modern web technologies, this platform provides transparent access to employment data, performance metrics, and comparative analytics.
+
+### What Makes MGNREGA Tracker Special?
+
+- **Real-Time Data Integration**: Fetches latest data from official data.gov.in API
+- **GPS-Based Auto-Detection**: Automatically detects your district using geolocation
+- **District Comparison**: Compare performance metrics between any two districts side-by-side
+- **Beautiful Visualizations**: Interactive charts and graphs powered by Recharts
+- **Bilingual Interface**: Full support for English and Hindi (हिंदी)
+- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
+- **Automated Data Ingestion**: Cron jobs for regular database updates at 3 AM IST
+- **Comprehensive KPIs**: Track families worked, person days, expenditure, and more
+- **Inclusivity Metrics**: Monitor women, SC, and ST participation rates
+- **Help & Guide**: Low-literacy friendly with simple visual guides
+
+Whether you're a citizen checking local performance, an administrator monitoring implementation, or a researcher analyzing trends, MGNREGA Tracker provides easy access to crucial employment guarantee data.
+
+## 🌍 **Live Demo**
+
+🔗 **Visit the live application:** https://bharat-digital-amber.vercel.app/
 
 ## ✨ Key Features
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 ### 🎯 **District Finder**
 
