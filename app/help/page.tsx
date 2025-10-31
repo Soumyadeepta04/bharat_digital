@@ -260,12 +260,12 @@ export default function HelpPage() {
           <p className="text-xl mb-6">अपने जिले की जाँच करने के लिए तैयार हैं?</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/district-finder">
-              <button className="px-8 py-4 bg-white text-blue-600 rounded-xl font-bold text-lg hover:shadow-xl transition-all transform hover:scale-105">
+              <button className="px-8 py-4 bg-white text-blue-600 rounded-xl font-bold text-lg hover:shadow-xl transition-all transform hover:scale-105 cursor-pointer">
                 Select District | जिला चुनें
               </button>
             </Link>
             <Link href="/">
-              <button className="px-8 py-4 bg-orange-500 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all transform hover:scale-105">
+              <button className="px-8 py-4 bg-orange-500 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all transform hover:scale-105 cursor-pointer">
                 Go to Homepage | मुखपृष्ठ पर जाएं
               </button>
             </Link>

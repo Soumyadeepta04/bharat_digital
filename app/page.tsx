@@ -142,61 +142,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-
-        {/* Bottom Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 text-center transform hover:-translate-y-2 cursor-pointer border-t-4 border-orange-500">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-linear-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <svg className="w-9 h-9 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6z"/>
-                </svg>
-              </div>
-            </div>
-            <div className="text-4xl font-bold text-gray-900 mb-2">2.5M+</div>
-            <h3 className="font-bold text-gray-900 mb-1 text-lg">Reports</h3>
-            <p className="text-sm text-gray-600">रिपोर्ट</p>
-          </div>
-
-          <div className="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 text-center transform hover:-translate-y-2 cursor-pointer border-t-4 border-blue-500">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-linear-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <svg className="w-9 h-9 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                </svg>
-              </div>
-            </div>
-            <div className="text-4xl font-bold text-gray-900 mb-2">8.5Cr+</div>
-            <h3 className="font-bold text-gray-900 mb-1 text-lg">Workers</h3>
-            <p className="text-sm text-gray-600">श्रमिक</p>
-          </div>
-
-          <div className="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 text-center transform hover:-translate-y-2 cursor-pointer border-t-4 border-orange-500">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-linear-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <svg className="w-9 h-9 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
-                </svg>
-              </div>
-            </div>
-            <div className="text-4xl font-bold text-gray-900 mb-2">45K+</div>
-            <h3 className="font-bold text-gray-900 mb-1 text-lg">Projects</h3>
-            <p className="text-sm text-gray-600">परियोजनाएं</p>
-          </div>
-
-          <div className="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 text-center transform hover:-translate-y-2 cursor-pointer border-t-4 border-blue-500">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-linear-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <svg className="w-9 h-9 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                </svg>
-              </div>
-            </div>
-            <div className="text-4xl font-bold text-gray-900 mb-2">750+</div>
-            <h3 className="font-bold text-gray-900 mb-1 text-lg">Districts</h3>
-            <p className="text-sm text-gray-600">जिले</p>
-          </div>
-        </div>
       </main>
 
       {/* Footer */}
