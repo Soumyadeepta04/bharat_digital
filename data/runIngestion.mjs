@@ -9,7 +9,6 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const API_URL = `https://api.data.gov.in/resource/ee03643a-ee4c-48c2-ac30-9f2ff26ab722?format=json&api-key=${process.env.DATA_GOV_API_KEY}`;
 const BATCH_SIZE = 1000;
 const FETCH_TIMEOUT = 30000; // 30 seconds timeout
-const MAX_RETRIES = 3;
 
 // Normalize month names to consistent 3-letter format
 function normalizeMonth(month) {

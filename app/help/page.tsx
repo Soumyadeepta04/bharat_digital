@@ -90,8 +90,8 @@ export default function HelpPage() {
     }
   ];
 
-  const getColorClasses = (color: string) => {
-    const colors: any = {
+  const getColorClasses = (color: string): string => {
+    const colors: Record<string, string> = {
       blue: "from-blue-500 to-blue-600 border-blue-300",
       purple: "from-purple-500 to-purple-600 border-purple-300",
       green: "from-green-500 to-green-600 border-green-300",
@@ -184,13 +184,13 @@ export default function HelpPage() {
               <div className="text-5xl mb-4">2️⃣</div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">View Dashboard</h3>
               <p className="text-gray-700 mb-2">डैशबोर्ड देखें</p>
-              <p className="text-sm text-gray-600">See all the numbers and charts about your district's performance</p>
+              <p className="text-sm text-gray-600">See all the numbers and charts about your district&apos;s performance</p>
             </div>
             <div className="bg-purple-50 p-6 rounded-xl border-2 border-purple-300">
               <div className="text-5xl mb-4">3️⃣</div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">Compare Districts</h3>
               <p className="text-gray-700 mb-2">जिलों की तुलना करें</p>
-              <p className="text-sm text-gray-600">Compare your district with other districts to see how it's doing</p>
+              <p className="text-sm text-gray-600">Compare your district with other districts to see how it&apos;s doing</p>
             </div>
           </div>
         </div>
@@ -240,11 +240,11 @@ export default function HelpPage() {
           </div>
           <div className="space-y-4">
             <div className="bg-blue-50 p-6 rounded-xl border-l-4 border-blue-500">
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Q: What does "Good" performance mean?</h3>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Q: What does &quot;Good&quot; performance mean?</h3>
               <p className="text-gray-700">A: Higher numbers for families worked, person days, completed works, and on-time payments are good. Higher percentages for women, SC/ST participation and 100-day completion are also good!</p>
             </div>
             <div className="bg-orange-50 p-6 rounded-xl border-l-4 border-orange-500">
-              <h3 className="font-bold text-lg text-gray-900 mb-2">Q: "अच्छा" प्रदर्शन का क्या मतलब है?</h3>
+              <h3 className="font-bold text-lg text-gray-900 mb-2">Q: &quot;अच्छा&quot; प्रदर्शन का क्या मतलब है?</h3>
               <p className="text-gray-700">A: काम मिले परिवार, व्यक्ति-दिवस, पूरे हुए काम, और समय पर भुगतान की ज्यादा संख्या अच्छी है। महिला, SC/ST भागीदारी और 100-दिन पूर्णता का ज्यादा प्रतिशत भी अच्छा है!</p>
             </div>
             <div className="bg-purple-50 p-6 rounded-xl border-l-4 border-purple-500">

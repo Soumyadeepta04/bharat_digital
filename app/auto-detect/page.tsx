@@ -3,16 +3,50 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
+interface NominatimAddress {
+  state?: string;
+  city?: string;
+  state_district?: string;
+  county?: string;
+  city_district?: string;
+  suburb?: string;
+  municipality?: string;
+  town?: string;
+  [key: string]: string | undefined;
+}
+
+interface NominatimData {
+  address: NominatimAddress;
+  [key: string]: unknown;
+}
+
+interface StateData {
+  state_code: string;
+  state_name: string;
+}
+
+interface DistrictData {
+  district_code: string;
+  district_name: string;
+  state_code: string;
+}
+
 export default function AutoDetect() {
   const router = useRouter();
   const [status, setStatus] = useState("detecting");
   const [error, setError] = useState<string | null>(null);
   const [detectedLocation, setDetectedLocation] = useState<string>("");
-  const [nearbyOptions, setNearbyOptions] = useState<any[]>([]);
+  const [nearbyOptions, setNearbyOptions] = useState<Array<{
+    district_code: string;
+    district_name: string;
+    state_code: string;
+    similarity: number;
+  }>>([]);
   const [showNearbyChoice, setShowNearbyChoice] = useState(false);
 
   useEffect(() => {
     detectLocation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Calculate string similarity (Levenshtein-based)
@@ -107,7 +141,7 @@ export default function AutoDetect() {
           try {
             // Try different zoom levels for better accuracy
             const zoomLevels = [14, 12, 10]; // Higher zoom first for more precise location
-            let nominatimData: any = null;
+            let nominatimData: NominatimData | null = null;
             
             for (const zoom of zoomLevels) {
               console.log(`Trying Nominatim with zoom level ${zoom}...`);
@@ -120,7 +154,7 @@ export default function AutoDetect() {
                   }
                 }
               );
-              const data = await response.json();
+              const data = await response.json() as NominatimData;
               
               console.log(`Zoom ${zoom} response:`, data);
               
@@ -133,6 +167,10 @@ export default function AutoDetect() {
               
               // Store the data anyway as fallback
               if (!nominatimData) nominatimData = data;
+            }
+            
+            if (!nominatimData) {
+              throw new Error('Failed to get location data from geocoding service');
             }
             
             console.log('Final Nominatim Response:', nominatimData);
@@ -250,7 +288,7 @@ export default function AutoDetect() {
           }
           
           // Find matching state (flexible matching)
-          const matchedState = statesData.data.find((s: any) => {
+          const matchedState = statesData.data.find((s: StateData) => {
             const dbStateLower = s.state_name.toLowerCase();
             const detectedStateLower = state.toLowerCase();
             
@@ -261,7 +299,7 @@ export default function AutoDetect() {
           });
           
           if (!matchedState) {
-            console.error('State not matched. Available states:', statesData.data.map((s: any) => s.state_name));
+            console.error('State not matched. Available states:', statesData.data.map((s: StateData) => s.state_name));
             setStatus("error");
             setError(`State "${state}" not found in database. Please select manually | राज्य "${state}" डेटाबेस में नहीं मिला।`);
             setTimeout(() => router.push('/district-finder'), 3000);
@@ -282,7 +320,7 @@ export default function AutoDetect() {
           }
           
           // Find matching district (flexible matching)
-          const matchedDistrict = districtsData.data.find((d: any) => {
+          const matchedDistrict = districtsData.data.find((d: DistrictData) => {
             const dbDistrictLower = d.district_name.toLowerCase();
             const detectedDistrictLower = district.toLowerCase();
             
@@ -294,7 +332,7 @@ export default function AutoDetect() {
           
           if (!matchedDistrict) {
             console.error('District not matched. Detected:', district);
-            console.error('Available districts:', districtsData.data.map((d: any) => d.district_name));
+            console.error('Available districts:', districtsData.data.map((d: DistrictData) => d.district_name));
             
             // Special city-to-district mapping for major cities
             const cityToDistrictMap: { [key: string]: string[] } = {
@@ -328,8 +366,12 @@ export default function AutoDetect() {
             }
             
             // Find nearby/similar districts as alternatives
-            const nearbyDistricts = districtsData.data
-              .map((d: any) => {
+            interface DistrictWithSimilarity extends DistrictData {
+              similarity: number;
+            }
+            
+            const nearbyDistricts: DistrictWithSimilarity[] = districtsData.data
+              .map((d: DistrictData) => {
                 let similarity = calculateSimilarity(district.toLowerCase(), d.district_name.toLowerCase());
                 
                 // Boost similarity if district is in the mapped list
@@ -345,9 +387,9 @@ export default function AutoDetect() {
                   similarity
                 };
               })
-              .sort((a: any, b: any) => b.similarity - a.similarity)
+              .sort((a: DistrictWithSimilarity, b: DistrictWithSimilarity) => b.similarity - a.similarity)
               .slice(0, 5) // Top 5 most similar
-              .filter((d: any) => d.similarity > 0.2); // Lower threshold to 20%
+              .filter((d: DistrictWithSimilarity) => d.similarity > 0.2); // Lower threshold to 20%
             
             console.log('Nearby/Similar districts:', nearbyDistricts);
             
@@ -531,7 +573,7 @@ export default function AutoDetect() {
                       <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
                         <p className="text-sm text-gray-700 font-semibold mb-2">Other nearby options:</p>
                         <div className="flex flex-wrap gap-2">
-                          {nearbyOptions.slice(1).map((opt: any, idx: number) => (
+                          {nearbyOptions.slice(1).map((opt, idx) => (
                             <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
                               {opt.district_name}
                             </span>

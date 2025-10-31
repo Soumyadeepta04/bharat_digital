@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
@@ -30,7 +30,6 @@ interface CompareData {
 
 export default function ComparePage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

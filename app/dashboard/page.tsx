@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 import Link from "next/link";
 
@@ -72,7 +72,7 @@ interface DashboardData {
   };
 }
 
-export default function DistrictDashboard() {
+function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -92,6 +92,7 @@ export default function DistrictDashboard() {
     if (districtCode) {
       fetchDashboardData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [districtCode]);
 
   const fetchDashboardData = async () => {
@@ -168,11 +169,6 @@ export default function DistrictDashboard() {
   const hhs100Days = Number(latestKpis.households_completed_100_days) || 0;
   const completion100Percent = familiesWorked > 0 ? (hhs100Days / familiesWorked) * 100 : 0;
 
-  // Inclusivity Data - Calculate from person days
-  const womenDays = (Number(latestKpis.percent_women) || 0) * totalWorkDays / 100;
-  const scDays = (Number(latestKpis.percent_sc) || 0) * totalWorkDays / 100;
-  const stDays = (Number(latestKpis.percent_st) || 0) * totalWorkDays / 100;
-
   const percentWomen = Number(latestKpis.percent_women) || 0;
   const percentSC = Number(latestKpis.percent_sc) || 0;
   const percentST = Number(latestKpis.percent_st) || 0;
@@ -184,7 +180,7 @@ export default function DistrictDashboard() {
   ];
 
   // Transform historical data for chart
-  const chartData = historicalData.slice(0, 12).reverse().map((districtPoint, index) => {
+  const chartData = historicalData.slice(0, 12).reverse().map((districtPoint) => {
     const statePoint = stateAverageData.find(
       s => s.fin_year === districtPoint.fin_year && s.month === districtPoint.month
     );
@@ -739,5 +735,20 @@ export default function DistrictDashboard() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function DistrictDashboard() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-orange-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-blue-700 font-semibold">Loading dashboard...</p>
+        </div>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 }
