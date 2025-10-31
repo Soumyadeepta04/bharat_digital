@@ -1,61 +1,106 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+interface State {
+  state_code: string;
+  state_name: string;
+}
+
+interface District {
+  district_code: string;
+  district_name: string;
+}
 
 export default function DistrictFinder() {
   const router = useRouter();
+  const [states, setStates] = useState<State[]>([]);
+  const [districts, setDistricts] = useState<District[]>([]);
   const [selectedState, setSelectedState] = useState("");
+  const [selectedStateCode, setSelectedStateCode] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedDistrictCode, setSelectedDistrictCode] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [loadingDistricts, setLoadingDistricts] = useState(false);
 
-  // State-District mapping
-  const stateDistrictMap: { [key: string]: string[] } = {
-    "Andhra Pradesh": ["Anantapur", "Chittoor", "East Godavari", "Guntur", "Krishna", "Kurnool", "Prakasam", "Srikakulam", "Visakhapatnam", "Vizianagaram", "West Godavari", "YSR Kadapa"],
-    "Arunachal Pradesh": ["Anjaw", "Changlang", "Dibang Valley", "East Kameng", "East Siang", "Kamle", "Kra Daadi", "Kurung Kumey", "Lepa Rada", "Lohit", "Longding", "Lower Dibang Valley"],
-    "Assam": ["Baksa", "Barpeta", "Biswanath", "Bongaigaon", "Cachar", "Charaideo", "Chirang", "Darrang", "Dhemaji", "Dhubri", "Dibrugarh", "Dima Hasao", "Goalpara", "Golaghat", "Hailakandi"],
-    "Bihar": ["Araria", "Arwal", "Aurangabad", "Banka", "Begusarai", "Bhagalpur", "Bhojpur", "Buxar", "Darbhanga", "East Champaran", "Gaya", "Gopalganj", "Jamui", "Jehanabad", "Kaimur"],
-    "Chhattisgarh": ["Balod", "Baloda Bazar", "Balrampur", "Bastar", "Bemetara", "Bijapur", "Bilaspur", "Dantewada", "Dhamtari", "Durg", "Gariaband", "Janjgir-Champa", "Jashpur", "Kabirdham"],
-    "Goa": ["North Goa", "South Goa"],
-    "Gujarat": ["Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bharuch", "Bhavnagar", "Botad", "Chhota Udaipur", "Dahod", "Dang", "Devbhoomi Dwarka", "Gandhinagar", "Gir Somnath"],
-    "Haryana": ["Ambala", "Bhiwani", "Charkhi Dadri", "Faridabad", "Fatehabad", "Gurugram", "Hisar", "Jhajjar", "Jind", "Kaithal", "Karnal", "Kurukshetra", "Mahendragarh", "Nuh", "Palwal"],
-    "Himachal Pradesh": ["Bilaspur", "Chamba", "Hamirpur", "Kangra", "Kinnaur", "Kullu", "Lahaul and Spiti", "Mandi", "Shimla", "Sirmaur", "Solan", "Una"],
-    "Jharkhand": ["Bokaro", "Chatra", "Deoghar", "Dhanbad", "Dumka", "East Singhbhum", "Garhwa", "Giridih", "Godda", "Gumla", "Hazaribagh", "Jamtara", "Khunti", "Koderma", "Latehar"],
-    "Karnataka": ["Bagalkot", "Ballari", "Belagavi", "Bengaluru Rural", "Bengaluru Urban", "Bidar", "Chamarajanagar", "Chikballapur", "Chikkamagaluru", "Chitradurga", "Dakshina Kannada", "Davanagere"],
-    "Kerala": ["Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasaragod", "Kollam", "Kottayam", "Kozhikode", "Malappuram", "Palakkad", "Pathanamthitta", "Thiruvananthapuram", "Thrissur", "Wayanad"],
-    "Madhya Pradesh": ["Agar Malwa", "Alirajpur", "Anuppur", "Ashoknagar", "Balaghat", "Barwani", "Betul", "Bhind", "Bhopal", "Burhanpur", "Chhatarpur", "Chhindwara", "Damoh", "Datia", "Dewas"],
-    "Maharashtra": ["Ahmednagar", "Akola", "Amravati", "Aurangabad", "Beed", "Bhandara", "Buldhana", "Chandrapur", "Dhule", "Gadchiroli", "Gondia", "Hingoli", "Jalgaon", "Jalna", "Kolhapur"],
-    "Manipur": ["Bishnupur", "Chandel", "Churachandpur", "Imphal East", "Imphal West", "Jiribam", "Kakching", "Kamjong", "Kangpokpi", "Noney", "Pherzawl", "Senapati", "Tamenglong", "Tengnoupal"],
-    "Meghalaya": ["East Garo Hills", "East Jaintia Hills", "East Khasi Hills", "North Garo Hills", "Ri Bhoi", "South Garo Hills", "South West Garo Hills", "South West Khasi Hills", "West Garo Hills"],
-    "Mizoram": ["Aizawl", "Champhai", "Hnahthial", "Khawzawl", "Kolasib", "Lawngtlai", "Lunglei", "Mamit", "Saiha", "Saitual", "Serchhip"],
-    "Nagaland": ["Dimapur", "Kiphire", "Kohima", "Longleng", "Mokokchung", "Mon", "Peren", "Phek", "Tuensang", "Wokha", "Zunheboto"],
-    "Odisha": ["Angul", "Balangir", "Balasore", "Bargarh", "Bhadrak", "Boudh", "Cuttack", "Deogarh", "Dhenkanal", "Gajapati", "Ganjam", "Jagatsinghpur", "Jajpur", "Jharsuguda", "Kalahandi"],
-    "Punjab": ["Amritsar", "Barnala", "Bathinda", "Faridkot", "Fatehgarh Sahib", "Fazilka", "Ferozepur", "Gurdaspur", "Hoshiarpur", "Jalandhar", "Kapurthala", "Ludhiana", "Mansa", "Moga", "Mohali"],
-    "Rajasthan": ["Ajmer", "Alwar", "Banswara", "Baran", "Barmer", "Bharatpur", "Bhilwara", "Bikaner", "Bundi", "Chittorgarh", "Churu", "Dausa", "Dholpur", "Dungarpur", "Hanumangarh", "Jaipur"],
-    "Sikkim": ["East Sikkim", "North Sikkim", "South Sikkim", "West Sikkim"],
-    "Tamil Nadu": ["Ariyalur", "Chengalpattu", "Chennai", "Coimbatore", "Cuddalore", "Dharmapuri", "Dindigul", "Erode", "Kallakurichi", "Kanchipuram", "Kanyakumari", "Karur", "Krishnagiri", "Madurai"],
-    "Telangana": ["Adilabad", "Bhadradri Kothagudem", "Hyderabad", "Jagtial", "Jangaon", "Jayashankar", "Jogulamba", "Kamareddy", "Karimnagar", "Khammam", "Komaram Bheem", "Mahabubabad", "Mahbubnagar"],
-    "Tripura": ["Dhalai", "Gomati", "Khowai", "North Tripura", "Sepahijala", "South Tripura", "Unakoti", "West Tripura"],
-    "Uttar Pradesh": ["Agra", "Aligarh", "Ambedkar Nagar", "Amethi", "Amroha", "Auraiya", "Ayodhya", "Azamgarh", "Baghpat", "Bahraich", "Ballia", "Balrampur", "Banda", "Barabanki", "Bareilly"],
-    "Uttarakhand": ["Almora", "Bageshwar", "Chamoli", "Champawat", "Dehradun", "Haridwar", "Nainital", "Pauri Garhwal", "Pithoragarh", "Rudraprayag", "Tehri Garhwal", "Udham Singh Nagar", "Uttarkashi"],
-    "West Bengal": ["Alipurduar", "Bankura", "Birbhum", "Cooch Behar", "Dakshin Dinajpur", "Darjeeling", "Hooghly", "Howrah", "Jalpaiguri", "Jhargram", "Kalimpong", "Kolkata", "Malda", "Murshidabad"]
+  // Fetch states on component mount
+  useEffect(() => {
+    fetchStates();
+  }, []);
+
+  const fetchStates = async () => {
+    try {
+      const response = await fetch('/api/states');
+      const data = await response.json();
+      if (data.success) {
+        setStates(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching states:', error);
+      alert('Failed to load states. Please refresh the page.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchDistricts = async (stateCode: string) => {
+    setLoadingDistricts(true);
+    try {
+      const response = await fetch(`/api/districts/${stateCode}`);
+      const data = await response.json();
+      if (data.success) {
+        setDistricts(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching districts:', error);
+      alert('Failed to load districts. Please try again.');
+    } finally {
+      setLoadingDistricts(false);
+    }
   };
 
   const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedState(e.target.value);
-    setSelectedDistrict(""); // Reset district when state changes
+    const stateCode = e.target.value;
+    const state = states.find(s => s.state_code === stateCode);
+    
+    setSelectedStateCode(stateCode);
+    setSelectedState(state?.state_name || "");
+    setSelectedDistrict("");
+    setSelectedDistrictCode("");
+    setDistricts([]);
+    
+    if (stateCode) {
+      fetchDistricts(stateCode);
+    }
   };
 
   const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedDistrict(e.target.value);
+    const districtCode = e.target.value;
+    const district = districts.find(d => d.district_code === districtCode);
+    
+    setSelectedDistrictCode(districtCode);
+    setSelectedDistrict(district?.district_name || "");
   };
 
   const handleViewData = () => {
-    if (selectedState && selectedDistrict) {
-      router.push(`/dashboard?state=${encodeURIComponent(selectedState)}&district=${encodeURIComponent(selectedDistrict)}`);
+    if (selectedStateCode && selectedDistrictCode) {
+      router.push(`/dashboard?districtCode=${encodeURIComponent(selectedDistrictCode)}&districtName=${encodeURIComponent(selectedDistrict)}&stateName=${encodeURIComponent(selectedState)}`);
     } else {
       alert("कृपया राज्य और जिला चुनें | Please select both State and District");
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-orange-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-blue-700 font-semibold">Loading states...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-orange-50">
@@ -113,38 +158,15 @@ export default function DistrictFinder() {
               </label>
               <select 
                 className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 text-lg cursor-pointer hover:border-blue-400 transition-all shadow-sm"
-                value={selectedState}
+                value={selectedStateCode}
                 onChange={handleStateChange}
               >
                 <option value="">Select State / राज्य चुनें</option>
-                <option value="Andhra Pradesh">Andhra Pradesh</option>
-                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                <option value="Assam">Assam</option>
-                <option value="Bihar">Bihar</option>
-                <option value="Chhattisgarh">Chhattisgarh</option>
-                <option value="Goa">Goa</option>
-                <option value="Gujarat">Gujarat</option>
-                <option value="Haryana">Haryana</option>
-                <option value="Himachal Pradesh">Himachal Pradesh</option>
-                <option value="Jharkhand">Jharkhand</option>
-                <option value="Karnataka">Karnataka</option>
-                <option value="Kerala">Kerala</option>
-                <option value="Madhya Pradesh">Madhya Pradesh</option>
-                <option value="Maharashtra">Maharashtra</option>
-                <option value="Manipur">Manipur</option>
-                <option value="Meghalaya">Meghalaya</option>
-                <option value="Mizoram">Mizoram</option>
-                <option value="Nagaland">Nagaland</option>
-                <option value="Odisha">Odisha</option>
-                <option value="Punjab">Punjab</option>
-                <option value="Rajasthan">Rajasthan</option>
-                <option value="Sikkim">Sikkim</option>
-                <option value="Tamil Nadu">Tamil Nadu</option>
-                <option value="Telangana">Telangana</option>
-                <option value="Tripura">Tripura</option>
-                <option value="Uttar Pradesh">Uttar Pradesh</option>
-                <option value="Uttarakhand">Uttarakhand</option>
-                <option value="West Bengal">West Bengal</option>
+                {states.map((state) => (
+                  <option key={state.state_code} value={state.state_code}>
+                    {state.state_name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -154,25 +176,33 @@ export default function DistrictFinder() {
                 Please Select District <span className="text-sm font-semibold">(कृपया जिला चुनें)</span>
               </label>
               <select 
-                className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 text-lg cursor-pointer hover:border-blue-400 transition-all shadow-sm"
-                value={selectedDistrict}
+                className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 text-lg cursor-pointer hover:border-blue-400 transition-all shadow-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                value={selectedDistrictCode}
                 onChange={handleDistrictChange}
-                disabled={!selectedState}
+                disabled={!selectedStateCode || loadingDistricts}
               >
-                <option value="">Select District / जिला चुनें</option>
-                {selectedState && stateDistrictMap[selectedState]?.map((district) => (
-                  <option key={district} value={district}>
-                    {district}
+                <option value="">
+                  {loadingDistricts ? "Loading districts..." : "Select District / जिला चुनें"}
+                </option>
+                {districts.map((district) => (
+                  <option key={district.district_code} value={district.district_code}>
+                    {district.district_name}
                   </option>
                 ))}
               </select>
+              {loadingDistricts && (
+                <div className="mt-2 flex items-center gap-2 text-blue-600">
+                  <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-sm">Loading districts...</span>
+                </div>
+              )}
             </div>
 
             {/* Error Message */}
             <div className="text-orange-600 text-sm font-semibold px-2">
-              {!selectedState 
+              {!selectedStateCode 
                 ? "Please select a state first | पहले राज्य चुनें फिर जिला चुनें"
-                : !selectedDistrict
+                : !selectedDistrictCode
                 ? "Now select a district | अब जिला चुनें"
                 : ""}
             </div>
@@ -180,7 +210,8 @@ export default function DistrictFinder() {
             {/* View Data Button */}
             <button 
               onClick={handleViewData}
-              className="w-full bg-linear-to-r from-blue-500 to-blue-600 text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all cursor-pointer transform hover:scale-[1.02] text-lg"
+              disabled={!selectedStateCode || !selectedDistrictCode}
+              className="w-full bg-linear-to-r from-blue-500 to-blue-600 text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all cursor-pointer transform hover:scale-[1.02] text-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               View Data | डेटा देखें
             </button>

@@ -26,7 +26,7 @@ export async function transformAndStorePerformanceData(): Promise<void> {
       INSERT INTO district_monthly_performance (
         fin_year, month, state_code, state_name, district_code, district_name,
         families_worked, total_person_days, on_time_payment_percent, total_expenditure,
-        completed_works, ongoing_works, hundred_day_completion_rate,
+        completed_works, ongoing_works, hundred_day_completion_rate, households_completed_100_days,
         percent_women, percent_sc, percent_st,
         is_latest_month
       )
@@ -53,6 +53,7 @@ export async function transformAndStorePerformanceData(): Promise<void> {
                       / total_households_worked::NUMERIC) * 100, 2)
           ELSE 0
         END AS hundred_day_completion_rate,
+        COALESCE(total_no_of_hhs_completed_100_days_of_wage_employment, 0) AS households_completed_100_days,
         
         -- Section 3: "क्या यह सबके लिए है?" (Is it Fair for Everyone?)
         CASE 
@@ -102,7 +103,8 @@ export async function transformAndStorePerformanceData(): Promise<void> {
         fin_year, month, state_code, state_name,
         avg_families_worked, avg_total_person_days, avg_on_time_payment_percent, 
         avg_total_expenditure, avg_completed_works, avg_ongoing_works,
-        avg_hundred_day_completion_rate, avg_percent_women, avg_percent_sc, avg_percent_st
+        avg_hundred_day_completion_rate, avg_households_completed_100_days,
+        avg_percent_women, avg_percent_sc, avg_percent_st
       )
       SELECT 
         fin_year,
@@ -116,6 +118,7 @@ export async function transformAndStorePerformanceData(): Promise<void> {
         ROUND(AVG(completed_works)::NUMERIC, 2) AS avg_completed_works,
         ROUND(AVG(ongoing_works)::NUMERIC, 2) AS avg_ongoing_works,
         ROUND(AVG(hundred_day_completion_rate)::NUMERIC, 2) AS avg_hundred_day_completion_rate,
+        ROUND(AVG(households_completed_100_days)::NUMERIC, 2) AS avg_households_completed_100_days,
         ROUND(AVG(percent_women)::NUMERIC, 2) AS avg_percent_women,
         ROUND(AVG(percent_sc)::NUMERIC, 2) AS avg_percent_sc,
         ROUND(AVG(percent_st)::NUMERIC, 2) AS avg_percent_st

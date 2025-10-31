@@ -1,0 +1,9 @@
+# Logs directory for cron service
+# Contains execution logs and last run timestamp
+
+# Log files
+cron.log
+last-run.json
+
+# Keep this directory in git
+!.gitkeep

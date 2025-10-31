@@ -1,41 +1,161 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import Link from "next/link";
+
+interface LatestKpis {
+  fin_year: string;
+  month: string;
+  state_code: string;
+  state_name: string;
+  district_code: string;
+  district_name: string;
+  families_worked: number;
+  total_person_days: number;
+  on_time_payment_percent: number;
+  total_expenditure: number;
+  completed_works: number;
+  ongoing_works: number;
+  hundred_day_completion_rate: number;
+  households_completed_100_days: number;
+  percent_women: number;
+  percent_sc: number;
+  percent_st: number;
+  created_at: string;
+}
+
+interface HistoricalDataPoint {
+  fin_year: string;
+  month: string;
+  families_worked: number;
+  total_person_days: number;
+  on_time_payment_percent: number;
+  total_expenditure: number;
+  completed_works: number;
+  ongoing_works: number;
+  hundred_day_completion_rate: number;
+  households_completed_100_days: number;
+  percent_women: number;
+  percent_sc: number;
+  percent_st: number;
+  created_at: string;
+}
+
+interface StateAverageDataPoint {
+  fin_year: string;
+  month: string;
+  avg_families_worked: number;
+  avg_total_person_days: number;
+  avg_on_time_payment_percent: number;
+  avg_total_expenditure: number;
+  avg_completed_works: number;
+  avg_ongoing_works: number;
+  avg_hundred_day_completion_rate: number;
+  avg_households_completed_100_days: number;
+  avg_percent_women: number;
+  avg_percent_sc: number;
+  avg_percent_st: number;
+  created_at: string;
+}
+
+interface DashboardData {
+  latestKpis: LatestKpis;
+  historicalData: HistoricalDataPoint[];
+  stateAverageData: StateAverageDataPoint[];
+  metadata: {
+    financial_year: string;
+    district_months_available: number;
+    state_months_available: number;
+    note: string;
+  };
+}
 
 export default function DistrictDashboard() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  const stateName = searchParams.get('state') || '[State Name]';
-  const districtName = searchParams.get('district') || '[District Name]';
+  const districtCode = searchParams.get('districtCode') || '';
+  const districtNameParam = searchParams.get('districtName') || '[District Name]';
+  const stateNameParam = searchParams.get('stateName') || '[State Name]';
+  
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
 
-  // Mock data - Replace with actual API data
-  const mockData = {
-    Total_Households_Worked: "25000",
-    Total_Exp: "50000000",
-    percentage_payments_gererated_within_15_days: "85",
-    Number_of_Completed_Works: "450",
-    Number_of_Ongoing_Works: "150",
-    Total_No_of_HHs_completed_100_Days: "5000",
-    Women_Persondays: "800000",
-    SC_persondays: "300000",
-    ST_persondays: "200000",
+  // Use data from API if available, otherwise use URL params
+  const districtName = dashboardData?.latestKpis.district_name || districtNameParam;
+  const stateName = dashboardData?.latestKpis.state_name || stateNameParam;
+
+  useEffect(() => {
+    if (districtCode) {
+      fetchDashboardData();
+    }
+  }, [districtCode]);
+
+  const fetchDashboardData = async () => {
+    try {
+      const response = await fetch(`/api/dashboard/${districtCode}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        setDashboardData(data.data);
+      } else {
+        setError(data.message || 'Failed to fetch dashboard data');
+      }
+    } catch (err) {
+      console.error('Error fetching dashboard data:', err);
+      setError('Failed to load dashboard data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Calculate Total Person Days (assuming 50 days average per household)
-  const totalHouseholdsWorked = parseFloat(mockData.Total_Households_Worked) || 0;
-  const totalPersonDays = totalHouseholdsWorked * 50; // This should come from actual data
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-orange-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-blue-700 font-semibold">Loading dashboard data...</p>
+        </div>
+      </div>
+    );
+  }
 
-  // Hero KPIs
-  const familiesWorked = parseFloat(mockData.Total_Households_Worked) || 0;
-  const totalWorkDays = totalPersonDays;
-  const onTimePaymentPercent = parseFloat(mockData.percentage_payments_gererated_within_15_days) || 0;
-  const totalExpenditure = parseFloat(mockData.Total_Exp) || 0;
+  if (error || !dashboardData) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-orange-50 flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">Error Loading Data</h3>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={() => router.back()}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const { latestKpis, historicalData, stateAverageData } = dashboardData;
+
+  // Hero KPIs - Convert all to numbers
+  const familiesWorked = Number(latestKpis.families_worked) || 0;
+  const totalWorkDays = Number(latestKpis.total_person_days) || 0;
+  const onTimePaymentPercent = Number(latestKpis.on_time_payment_percent) || 0;
+  const totalExpenditure = Number(latestKpis.total_expenditure) || 0;
 
   // Work Status Data
-  const completedWorks = parseFloat(mockData.Number_of_Completed_Works) || 0;
-  const ongoingWorks = parseFloat(mockData.Number_of_Ongoing_Works) || 0;
+  const completedWorks = Number(latestKpis.completed_works) || 0;
+  const ongoingWorks = Number(latestKpis.ongoing_works) || 0;
   
   const workStatusData = [
     { name: 'पूरे हुए', value: completedWorks },
@@ -45,39 +165,39 @@ export default function DistrictDashboard() {
   const WORK_COLORS = ['#10b981', '#f59e0b'];
 
   // 100-Day Completion Rate
-  const hhs100Days = parseFloat(mockData.Total_No_of_HHs_completed_100_Days) || 0;
-  const completion100Percent = totalHouseholdsWorked > 0 ? (hhs100Days / totalHouseholdsWorked) * 100 : 0;
+  const hhs100Days = Number(latestKpis.households_completed_100_days) || 0;
+  const completion100Percent = familiesWorked > 0 ? (hhs100Days / familiesWorked) * 100 : 0;
 
-  // Inclusivity Data
-  const womenDays = parseFloat(mockData.Women_Persondays) || 0;
-  const scDays = parseFloat(mockData.SC_persondays) || 0;
-  const stDays = parseFloat(mockData.ST_persondays) || 0;
+  // Inclusivity Data - Calculate from person days
+  const womenDays = (Number(latestKpis.percent_women) || 0) * totalWorkDays / 100;
+  const scDays = (Number(latestKpis.percent_sc) || 0) * totalWorkDays / 100;
+  const stDays = (Number(latestKpis.percent_st) || 0) * totalWorkDays / 100;
 
-  const percentWomen = totalPersonDays > 0 ? (womenDays / totalPersonDays) * 100 : 0;
-  const percentSC = totalPersonDays > 0 ? (scDays / totalPersonDays) * 100 : 0;
-  const percentST = totalPersonDays > 0 ? (stDays / totalPersonDays) * 100 : 0;
+  const percentWomen = Number(latestKpis.percent_women) || 0;
+  const percentSC = Number(latestKpis.percent_sc) || 0;
+  const percentST = Number(latestKpis.percent_st) || 0;
 
   const inclusivityData = [
-    { category: 'महिलाएँ (Women)', percent: parseFloat(percentWomen.toFixed(1)), fill: '#ec4899' },
-    { category: 'SC', percent: parseFloat(percentSC.toFixed(1)), fill: '#8b5cf6' },
-    { category: 'ST', percent: parseFloat(percentST.toFixed(1)), fill: '#06b6d4' }
+    { category: 'महिलाएँ (Women)', percent: Number(percentWomen.toFixed(1)), fill: '#ec4899' },
+    { category: 'SC', percent: Number(percentSC.toFixed(1)), fill: '#8b5cf6' },
+    { category: 'ST', percent: Number(percentST.toFixed(1)), fill: '#06b6d4' }
   ];
 
-  // Historical Chart Data (Mock - Last 12 months)
-  const historicalData = [
-    { month: "Apr", district: 85000, stateAvg: 65000 },
-    { month: "May", district: 92000, stateAvg: 70000 },
-    { month: "Jun", district: 88000, stateAvg: 68000 },
-    { month: "Jul", district: 95000, stateAvg: 72000 },
-    { month: "Aug", district: 98000, stateAvg: 75000 },
-    { month: "Sep", district: 105000, stateAvg: 78000 },
-    { month: "Oct", district: 110000, stateAvg: 80000 },
-    { month: "Nov", district: 115000, stateAvg: 82000 },
-    { month: "Dec", district: 120000, stateAvg: 85000 },
-    { month: "Jan", district: 125000, stateAvg: 88000 },
-    { month: "Feb", district: 118000, stateAvg: 86000 },
-    { month: "Mar", district: 122000, stateAvg: 87000 },
-  ];
+  // Transform historical data for chart
+  const chartData = historicalData.slice(0, 12).reverse().map((districtPoint, index) => {
+    const statePoint = stateAverageData.find(
+      s => s.fin_year === districtPoint.fin_year && s.month === districtPoint.month
+    );
+    
+    // Handle undefined month gracefully
+    const monthAbbr = districtPoint.month ? districtPoint.month.substring(0, 3) : 'N/A';
+    
+    return {
+      month: monthAbbr,
+      district: Number(districtPoint.total_person_days) || 0,
+      stateAvg: Number(statePoint?.avg_total_person_days) || 0
+    };
+  });
 
   // Format numbers
   const formatNumber = (num: number) => {
@@ -117,6 +237,40 @@ export default function DistrictDashboard() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        
+        {/* Data Freshness Indicator */}
+        <div className="bg-blue-50 border-2 border-blue-300 rounded-xl p-4 flex items-center justify-between shadow-md">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-bold text-gray-900">Last Updated | आखिरी अपडेट</p>
+              <p className="text-sm text-gray-700">
+                {latestKpis.fin_year} - {latestKpis.month} 
+                {latestKpis.created_at && (
+                  <span className="ml-2 text-gray-600">
+                    ({new Date(latestKpis.created_at).toLocaleDateString('en-IN', { 
+                      day: 'numeric', 
+                      month: 'short', 
+                      year: 'numeric' 
+                    })})
+                  </span>
+                )}
+              </p>
+            </div>
+          </div>
+          <Link href="/help">
+            <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all font-medium flex items-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+              </svg>
+              Help | मदद
+            </button>
+          </Link>
+        </div>
         
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-gray-600 bg-white/60 backdrop-blur-sm px-4 py-3 rounded-lg shadow-sm">
@@ -160,6 +314,16 @@ export default function DistrictDashboard() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </div>
+                  <div className="relative group/tooltip">
+                    <svg className="w-5 h-5 text-gray-400 hover:text-blue-600 cursor-help transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    <div className="absolute right-0 top-8 w-64 bg-gray-900 text-white text-xs p-3 rounded-lg shadow-xl opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all z-50">
+                      Number of families that received employment. Higher = Better!
+                      <br />
+                      <span className="text-gray-300">काम पाने वाले परिवारों की संख्या। ज्यादा = अच्छा!</span>
+                    </div>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <p className="text-xs font-bold text-gray-600 uppercase tracking-wide">परिवारों को काम</p>
@@ -181,6 +345,16 @@ export default function DistrictDashboard() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
+                  <div className="relative group/tooltip">
+                    <svg className="w-5 h-5 text-gray-400 hover:text-purple-600 cursor-help transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    <div className="absolute right-0 top-8 w-64 bg-gray-900 text-white text-xs p-3 rounded-lg shadow-xl opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all z-50">
+                      Total employment days provided. 1 person working 100 days = 100 person-days.
+                      <br />
+                      <span className="text-gray-300">कुल रोजगार के दिन। 1 व्यक्ति 100 दिन = 100 व्यक्ति-दिवस।</span>
+                    </div>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <p className="text-xs font-bold text-gray-600 uppercase tracking-wide">कुल दिन काम</p>
@@ -201,6 +375,16 @@ export default function DistrictDashboard() {
                     <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
+                  </div>
+                  <div className="relative group/tooltip">
+                    <svg className="w-5 h-5 text-gray-400 hover:text-green-600 cursor-help transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    <div className="absolute right-0 top-8 w-64 bg-gray-900 text-white text-xs p-3 rounded-lg shadow-xl opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all z-50">
+                      Percentage of wages paid within 15 days. Higher = Better!
+                      <br />
+                      <span className="text-gray-300">15 दिनों में भुगतान का प्रतिशत। ज्यादा = अच्छा!</span>
+                    </div>
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -224,6 +408,16 @@ export default function DistrictDashboard() {
                     <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
+                  </div>
+                  <div className="relative group/tooltip">
+                    <svg className="w-5 h-5 text-gray-400 hover:text-orange-600 cursor-help transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    <div className="absolute right-0 top-8 w-64 bg-gray-900 text-white text-xs p-3 rounded-lg shadow-xl opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all z-50">
+                      Total expenditure on wages and materials in the district.
+                      <br />
+                      <span className="text-gray-300">जिले में मजदूरी और सामग्री पर कुल खर्च।</span>
+                    </div>
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -365,7 +559,7 @@ export default function DistrictDashboard() {
                   <p className="text-xs text-gray-600 font-medium mt-1">पूरे किए<br/>Completed</p>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
-                  <p className="text-xl font-black text-gray-700">{totalHouseholdsWorked.toLocaleString('en-IN')}</p>
+                  <p className="text-xl font-black text-gray-700">{familiesWorked.toLocaleString('en-IN')}</p>
                   <p className="text-xs text-gray-600 font-medium mt-1">कुल परिवार<br/>Total</p>
                 </div>
               </div>
@@ -462,7 +656,7 @@ export default function DistrictDashboard() {
           </div>
 
           <ResponsiveContainer width="100%" height={350}>
-            <LineChart data={historicalData} margin={{ top: 20, right: 30, left: 40, bottom: 20 }}>
+            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 40, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
               <XAxis 
                 dataKey="month" 
