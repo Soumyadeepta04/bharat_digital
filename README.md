@@ -39,6 +39,16 @@
 
 <br/>
 
+
+## 🎬 Website Walkthrough Video
+
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/cd1bd8c0-7870-48ca-9bdc-a1b0b7b44fbc" width="700" controls>
+    Your browser does not support the video tag.
+  </video>
+  <p><i>Watch this short walkthrough of the MGNREGA Performance Tracker website</i></p>
+</div>
+
 <details>
 <summary><h1>📸 Application Screenshots</h1></summary>
 
